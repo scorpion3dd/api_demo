@@ -1,0 +1,13 @@
+.idea
+
+vendor
+
+log/*
+
+_vspom
+
+build
+
+docs
+
+none
