@@ -1,30 +1,40 @@
-# Simple REST Full API project
-
-## Реализация небольшой простой REST Full API для авиакомпании
-
+> # Simple demo REST API project
+>
+> ### Implementing a small simple REST API for an airline
+>
+> This project is no longer maintained.
+>
+> At this time, the repository has been archived, and is read-only.
 ### (c) Denis Puzik <scorpion3dd@gmail.com>
 
-- API реагирует на следующие запросы-команды пользователя::
+---
+
+This self-written project is done without using any framework.
+
+RELEASE INFORMATION
+===================
+
+- The API responds to the following user command requests:
 ~~~~
-1. забронировать место в рейсе;
-2. отменить бронь;
-3. купить билет;
-4. возвратить купленный билет.
+1. book a seat on the flight;
+2. cancel reservation;
+3. to buy a ticket;
+4. return a purchased ticket.
 ~~~~
-Место - обычное число от 1 до 150. 
+Place - the usual number from 1 to 150. 
 
-Купить билет можно как после бронирования, так и без него. 
+You can buy a ticket either after booking or without it. 
 
-Функционал оплаты и возврата денег реализовыван в виде измения состояний.
+The functionality of payment and refund is implemented in the form of state changes.
 
-- API подписан на получение событий через HTTP протокол (callback-уведомления) 
-на один из своих адресов - http://localhost/api/v1/callback/events 
+- The API is subscribed to receive events via the HTTP protocol (callback notifications)
+  to one of your addresses - /api/v1/callback/events 
 ~~~~~~
-Типы уведомлений:
-- завершена продажа билетов на рейс;
-- рейс отменён.
+Types of notifications:
+- sale of tickets for the flight is completed;
+- flight canceled.
 ~~~~~~
-- Пример уведомления:  
+- Sample notification:  
 ~~~~~~
 {
     "data": {
@@ -35,20 +45,29 @@
     }
 }
 ~~~~~~
-При отмене рейса пользователям, забронировавшим или купившим билеты на этот рейс, 
-в фоновом режиме отправляются эл. письма об отмене рейса. 
+If a flight is canceled, users who have booked or purchased tickets for that flight,
+emails are sent in the background. flight cancellation letters. 
 
-В случае ответа на событие HTTP кодом отличным от 200 событие будет повторно получено 
-через некоторый промежуток времени.
+In case of response to the event with an HTTP code other than 200, the event will be re-received
+after a certain period of time.
 
+SYSTEM REQUIREMENTS
+===================
 
-### Установка:
+This self-written project requires PHP 5.6 or later.
 
-> 1 Созлать БД airlines
->
-> 2 В БД airlines создать таблицы, выполнив SQL-скрипт:
-> 
-> CREATE TABLE airlines.reservation (
+INSTALLATION
+============
+
+1. Create DB airlines
+~~~~~~
+CREATE DATABASE airlines
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
+~~~~~~
+2. Create tables in the airlines database by executing the SQL script:
+~~~~~~
+CREATE TABLE airlines.reservation (
     id int(11) NOT NULL AUTO_INCREMENT,
     flight_id int(11) NOT NULL,
     place int(11) NOT NULL,
@@ -61,8 +80,9 @@
   AVG_ROW_LENGTH = 5461,
   CHARACTER SET utf8,
   COLLATE utf8_general_ci;
->
-> CREATE TABLE airlines.ticket (
+~~~~~~
+~~~~~~
+CREATE TABLE airlines.ticket (
     id int(11) NOT NULL AUTO_INCREMENT,
     flight_id int(11) NOT NULL,
     place int(11) NOT NULL,
@@ -76,17 +96,26 @@
   AVG_ROW_LENGTH = 1820,
   CHARACTER SET utf8,
   COLLATE utf8_general_ci;
-> 
-> 2 В файле \api\SuperRepository.php при необходимости изменить параметры PARAMS
-> 
-> 3 Прописать настройки Web-сервера Apache на папку с проектом
-
-### Описание API-запросов:
-
-1 забронировать место в рейсе
 ~~~~~~
-POST
-http://localhost/api/v1/reservation 
+3. Clone a project from the repository
+~~~~~~
+git clone https://github.com/scorpion3dd/Simple_REST_Full_API_airlines.git ./api.simple
+~~~~~~
+4. In the file /api/SuperRepository.php, if necessary, change the PARAMS parameters
+
+5. Create virtual host in you web server
+
+6. Reload Web Server (example Apache)
+~~~~~~
+sudo systemctl restart apache2
+~~~~~~
+
+DESCRIPTION OF API REQUESTS
+============
+
+1. book a seat on the flight
+~~~~~~
+POST /api/v1/reservation 
 IN:
 {
     "data": {
@@ -106,10 +135,9 @@ OUT ERROR (500):
     "message": "Saving Error"
 }
 ~~~~~~
-2 изменить бронь
+2. change booking
 ~~~~~~
-PUT
-http://localhost/api/v1/reservation 
+PUT /api/v1/reservation 
 IN:
 {
   "data": {
@@ -130,10 +158,9 @@ OUT ERROR (500):
   "message": "Update error"
 }
 ~~~~~~
-3 отменить бронь
+3. cancel reservation
 ~~~~~~
-DELETE
-http://localhost/api/v1/reservation
+DELETE /api/v1/reservation
 IN:
 {
     "data": {
@@ -151,10 +178,9 @@ OUT ERROR (500):
     "message": "Delete Error"
 }
 ~~~~~~
-4 все брони
+4. all reservations
 ~~~~~~
-GET
-http://localhost/api/v1/reservation
+GET /api/v1/reservation
 IN:
 {
     "data": {
@@ -178,10 +204,9 @@ OUT ERROR (500):
     "message": "Error"
 }
 ~~~~~~
-5 конкретная бронь
+5. specific booking
 ~~~~~~
-GET
-http://localhost/api/v1/reservation
+GET /api/v1/reservation
 IN:
 {
     "data": {
@@ -203,11 +228,9 @@ OUT ERROR (500):
     "message": "Data not found"
 }
 ~~~~~~
-
-6 купить билет
+6. to buy a ticket
 ~~~~~~
-POST
-http://localhost/api/v1/ticket 
+POST /api/v1/ticket 
 IN:
 {
     "data": {
@@ -228,10 +251,9 @@ OUT ERROR (500):
     "message": "Saving Error"
 }
 ~~~~~~
-7 изменить билет
+7. change ticket
 ~~~~~~
-PUT
-http://localhost/api/v1/ticket 
+PUT /api/v1/ticket 
 IN:
 {
   "data": {
@@ -253,10 +275,9 @@ OUT ERROR (500):
   "message": "Update error"
 }
 ~~~~~~
-8 возвратить купленный билет
+8. return a purchased ticket
 ~~~~~~
-DELETE
-http://localhost/api/v1/ticket
+DELETE /api/v1/ticket
 IN:
 {
     "data": {
@@ -274,10 +295,9 @@ OUT ERROR (500):
     "message": "Delete Error"
 }
 ~~~~~~
-9 все билеты
+9. all tickets
 ~~~~~~
-GET
-http://localhost/api/v1/ticket
+GET /api/v1/ticket
 IN:
 {
     "data": {
@@ -301,10 +321,9 @@ OUT ERROR (500):
     "message": "Error"
 }
 ~~~~~~
-10 конкретный билет
+10. specific ticket
 ~~~~~~
-GET
-http://localhost/api/v1/ticket
+GET /api/v1/ticket
 IN:
 {
     "data": {
@@ -327,11 +346,9 @@ OUT ERROR (500):
     "message": "Data not found"
 }
 ~~~~~~
-
-11 подписка на получение событий
+11. event subscription
 ~~~~~~
-POST
-http://localhost/api/v1/callback/events
+POST /api/v1/callback/events
 IN:
 {
     "data": {
