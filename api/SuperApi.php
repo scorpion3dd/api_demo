@@ -86,7 +86,21 @@ abstract class SuperApi
      */
     protected function getHeaders(): void
     {
-        $this->headers = getallheaders();
+        $this->headers = $this->getallheaders();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getallheaders(): array
+    {
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
     }
 
     /**

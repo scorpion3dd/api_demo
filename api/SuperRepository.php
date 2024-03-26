@@ -19,10 +19,10 @@ namespace api;
 abstract class SuperRepository
 {
     const PARAMS = [
-        'host' => 'localhost',
-        'user' => 'root',
-        'password' => '',
-        'dbname' => 'airlines',
+        'host' => 'host.docker.internal',
+        'user' => 'api_demo',
+        'password' => 'api_demo123',
+        'dbname' => 'api_demo',
     ];
 
     public $link;
